@@ -3,12 +3,12 @@
     <switch-roles @change="handleRolesChange" />
     <div :key="key" style="margin-top:30px;">
       <div>
-        <span v-permission="['admin']" class="permission-alert">
+        <span v-permission="['ADMIN']" class="permission-alert">
           Only
           <el-tag class="permission-tag" size="small">admin</el-tag> can see this
         </span>
-        <el-tag v-permission="['admin']" class="permission-sourceCode" type="info">
-          v-permission="['admin']"
+        <el-tag v-permission="['ADMIN']" class="permission-sourceCode" type="info">
+          v-permission="['ADMIN']"
         </el-tag>
       </div>
 

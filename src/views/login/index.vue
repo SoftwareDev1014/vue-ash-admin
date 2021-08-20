@@ -12,10 +12,10 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.email"
           placeholder="Username"
           name="username"
-          type="text"
+          type="email"
           tabindex="1"
           autocomplete="on"
         />
@@ -97,11 +97,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        email: 'admin001@gmail.com',
+        password: 'admin001'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        email: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       passwordType: 'password',
@@ -158,6 +158,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              console.log('Going to redirect', this.redirect)
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
