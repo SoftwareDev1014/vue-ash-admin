@@ -83,22 +83,22 @@
       <!--          </el-tag>-->
       <!--        </template>-->
       <!--      </el-table-column>-->
-      <!--      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">-->
-      <!--        <template slot-scope="{row,$index}">-->
-      <!--          <el-button type="primary" size="mini" @click="handleUpdate(row)">-->
-      <!--            Edit-->
-      <!--          </el-button>-->
-      <!--          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">-->
-      <!--            Publish-->
-      <!--          </el-button>-->
-      <!--          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">-->
-      <!--            Draft-->
-      <!--          </el-button>-->
-      <!--          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">-->
-      <!--            Delete-->
-      <!--          </el-button>-->
-      <!--        </template>-->
-      <!--      </el-table-column>-->
+      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            Edit
+          </el-button>
+          <!--                <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">-->
+          <!--                  Publish-->
+          <!--                </el-button>-->
+          <!--                <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">-->
+          <!--                  Draft-->
+          <!--                </el-button>-->
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+            Delete
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
@@ -114,10 +114,10 @@
         <!--          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />-->
         <!--        </el-form-item>-->
         <el-form-item label="Email" prop="email">
-          <el-input v-model="temp.email" type="email"/>
+          <el-input v-model="temp.email" type="email" />
         </el-form-item>
         <el-form-item label="Password" prop="password">
-          <el-input v-model="temp.password" type="password" show-password/>
+          <el-input v-model="temp.password" type="password" show-password />
         </el-form-item>
         <el-form-item label="First Name" prop="first_name">
           <el-input v-model="temp.first_name" type="text" />
@@ -152,11 +152,11 @@
 </template>
 
 <script>
-import { fetchPv, updateArticle } from '@/api/article'
+import { fetchPv } from '@/api/article'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination'
-import { getUserList } from '@/api/user' // secondary package based on el-pagination
+import { createUser, getUserList, updateUser } from '@/api/user' // secondary package based on el-pagination
 
 const calendarTypeOptions = [
   { key: 'CN', display_name: 'China' },
@@ -289,9 +289,12 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          console.log('this.temp', this.temp)
-          /* createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
+          const data = {
+            mac_address: 'admin',
+            ...this.temp
+          }
+          createUser(data).then((data) => {
+            this.list.unshift(data.user)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -299,13 +302,14 @@ export default {
               type: 'success',
               duration: 2000
             })
-          })*/
+          })
         }
       })
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.temp.updated_at = new Date(this.temp.timestamp)
+      delete this.temp.password
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -316,8 +320,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
+          tempData.updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ') // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.created_at = tempData.created_at.slice(0, 19).replace('T', ' ') // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          updateUser(tempData).then((data) => {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
@@ -332,13 +337,15 @@ export default {
       })
     },
     handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
-      })
       this.list.splice(index, 1)
+      updateUser({ id: row.id, isDelected: 1 }).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: 'Delete Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
     handleFetchPv(pv) {
       fetchPv(pv).then(response => {

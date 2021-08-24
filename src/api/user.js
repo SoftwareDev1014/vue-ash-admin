@@ -21,7 +21,20 @@ export function getUserList() {
     method: 'get'
   })
 }
-
+export function createUser(data) {
+  return request({
+    url: '/user/create',
+    method: 'post',
+    data
+  })
+}
+export function updateUser(data) {
+  return request({
+    url: '/user/update',
+    method: 'post',
+    data
+  })
+}
 export function logout() {
   return request({
     url: '/vue-element-admin/user/logout',
