@@ -23,7 +23,11 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="IP" prop="ip_address" width="150px"/>
+      <el-table-column label="IP" prop="ip_address" width="150px">
+        <template slot-scope="{row}">
+          {{ row.ip_address.split(':')[row.ip_address.split(':').length-1] }}
+        </template>
+      </el-table-column>
       <el-table-column label="MAC Address" prop="mac_address" width="150px"/>
       <el-table-column label="Token Secret" prop="secret" width="150px"/>
       <el-table-column label="Token" prop="token">
