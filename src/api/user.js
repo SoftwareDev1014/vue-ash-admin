@@ -28,6 +28,13 @@ export function createUser(data) {
     data
   })
 }
+export function getUserDevices(data) {
+  return request({
+    url: '/devices',
+    method: 'post',
+    data
+  })
+}
 export function updateUser(data) {
   return request({
     url: '/user/update',

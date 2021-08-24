@@ -1,6 +1,9 @@
 <template>
-  <div class="app-container">
-    <el-tabs v-model="activeName">
+  <div class="app-container" style="display: flex">
+    <el-input v-model="inputData" placeholder="Please input" style="width:400px;max-width:100%;" />
+    <el-button type="primary" icon="el-icon-document" @click="handleCopy(inputData,$event)">
+    </el-button>
+    <!--<el-tabs v-model="activeName">
       <el-tab-pane label="use clipboard  directly" name="directly">
         <el-input v-model="inputData" placeholder="Please input" style="width:400px;max-width:100%;" />
         <el-button type="primary" icon="el-icon-document" @click="handleCopy(inputData,$event)">
@@ -13,7 +16,7 @@
           copy
         </el-button>
       </el-tab-pane>
-    </el-tabs>
+    </el-tabs>-->
   </div>
 </template>
 
@@ -22,14 +25,20 @@ import clip from '@/utils/clipboard' // use clipboard directly
 import clipboard from '@/directive/clipboard/index.js' // use clipboard by v-directive
 
 export default {
-  name: 'ClipboardDemo',
+  name: 'Clipboard',
   directives: {
     clipboard
+  },
+  props: {
+    text: {
+      type: String,
+      default: 'Test String'
+    }
   },
   data() {
     return {
       activeName: 'directly',
-      inputData: 'Test String'
+      inputData: this.text
     }
   },
   methods: {
