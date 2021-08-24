@@ -46,21 +46,6 @@
       </el-tooltip>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
-          Or connect with
-        </el-button>
-      </div>
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -97,8 +82,8 @@ export default {
     }
     return {
       loginForm: {
-        email: 'admin001@gmail.com',
-        password: 'admin001',
+        email: '',
+        password: '',
         role: 'ADMIN',
         mac_address: '',
         ip_address: ''
@@ -159,17 +144,12 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          var OSName = 'Unknown OS'
-          if (navigator.appVersion.indexOf('Win') !== -1) OSName = 'Windows'
-          if (navigator.appVersion.indexOf('Mac') !== -1) OSName = 'MacOS'
-          if (navigator.appVersion.indexOf('X11') !== -1) OSName = 'UNIX'
-          if (navigator.appVersion.indexOf('Linux') !== -1) OSName = 'Linux'
 
           var nVer = navigator.appVersion
           var nAgt = navigator.userAgent
           var browserName = navigator.appName
           var fullVersion = '' + parseFloat(navigator.appVersion)
-          var majorVersion = parseInt(navigator.appVersion, 10)
+          var majorVersion
           var nameOffset, verOffset, ix
 
           // In Opera, the true version is after "Opera" or after "Version"
@@ -177,27 +157,32 @@ export default {
             browserName = 'Opera'
             fullVersion = nAgt.substring(verOffset + 6)
             if ((verOffset = nAgt.indexOf('Version')) !== -1) { fullVersion = nAgt.substring(verOffset + 8) }
+            // eslint-disable-next-line brace-style
           }
           // In MSIE, the true version is after "MSIE" in userAgent
           else if ((verOffset = nAgt.indexOf('MSIE')) !== -1) {
             browserName = 'Microsoft Internet Explorer'
             fullVersion = nAgt.substring(verOffset + 5)
+            // eslint-disable-next-line brace-style
           }
           // In Chrome, the true version is after "Chrome"
           else if ((verOffset = nAgt.indexOf('Chrome')) !== -1) {
             browserName = 'Chrome'
             fullVersion = nAgt.substring(verOffset + 7)
+            // eslint-disable-next-line brace-style
           }
           // In Safari, the true version is after "Safari" or after "Version"
           else if ((verOffset = nAgt.indexOf('Safari')) !== -1) {
             browserName = 'Safari'
             fullVersion = nAgt.substring(verOffset + 7)
             if ((verOffset = nAgt.indexOf('Version')) !== -1) { fullVersion = nAgt.substring(verOffset + 8) }
+            // eslint-disable-next-line brace-style
           }
           // In Firefox, the true version is after "Firefox"
           else if ((verOffset = nAgt.indexOf('Firefox')) !== -1) {
             browserName = 'Firefox'
             fullVersion = nAgt.substring(verOffset + 8)
+            // eslint-disable-next-line brace-style
           }
           // In most other browsers, "name/version" is at the end of userAgent
           else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) <
@@ -292,16 +277,16 @@ $cursor: #fff;
 
     input {
       background: transparent;
-      border: 0px;
+      border: 0;
       -webkit-appearance: none;
-      border-radius: 0px;
+      border-radius: 0;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
+        box-shadow: 0 0 0 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
@@ -362,7 +347,7 @@ $light_gray:#eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0 auto 40px auto;
       text-align: center;
       font-weight: bold;
     }
